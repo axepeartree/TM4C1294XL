@@ -15,3 +15,4 @@ Run `build.bat` at the root folder.
 
 1. Makefile instead of .bat
 2. Add driverlib
+3. Debugging
