@@ -17,7 +17,7 @@ objcopy: link
 	$(OBJCOPY) -O binary bin/out.elf bin/out.bin
 
 link: $(OBJS)
-	$(LINKER) -Ttm4c1294xl.lds -o bin/out.elf driverlib/obj/*.o obj/*.o
+	$(LINKER) -Ttm4c1294xl.lds -o bin/out.elf obj/*.o driverlib/obj/*.o
 
 $(OBJ)/%.o: %.c | $(OBJ)
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@

@@ -1,54 +1,39 @@
+
+#define PART_TM4C1294NCPDT
 #include <stdint.h>
-#include "inc/tm4c1294ncpdt.h"
+#include <stdbool.h>
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_memmap.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/gpio.h"
+#include "driverlib/pwm.h"
 
-int main(void)
-{
-    volatile uint32_t ui32Loop;
+#define LED_PERIPH SYSCTL_PERIPH_GPIOF
+#define LED_BASE GPIO_PORTF_BASE
+#define RED_LED GPIO_PIN_1      
 
-    //
-    // Enable the GPIO port that is used for the on-board LED.
-    //
-    SYSCTL_RCGCGPIO_R = SYSCTL_RCGCGPIO_R12;
 
-    //
-    // Do a dummy read to insert a few cycles after enabling the peripheral.
-    //
-    ui32Loop = SYSCTL_RCGCGPIO_R;
+int main(){
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
 
-    //
-    // Enable the GPIO pin for the LED (PN0).  Set the direction as output, and
-    // enable the GPIO pin for digital function.
-    //
-    GPIO_PORTN_DIR_R = 0x01;
-    GPIO_PORTN_DEN_R = 0x01;
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    SysCtlDelay(10);
 
-    //
-    // Loop forever.
-    //
-    while(1)
-    {
-        //
-        // Turn on the LED.
-        //
-        GPIO_PORTN_DATA_R |= 0x01;
+    GPIOPinConfigure(GPIO_PF1_M0PWM1);
 
-        //
-        // Delay for a bit.
-        //
-        for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
-        {
-        }
+    GPIOPinTypePWM(GPIO_PORTF_BASE, GPIO_PIN_1);
 
-        //
-        // Turn off the LED.
-        //
-        GPIO_PORTN_DATA_R &= ~(0x01);
+    PWMClockSet(PWM0_BASE, PWM_SYSCLK_DIV_8);
 
-        //
-        // Delay for a bit.
-        //
-        for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
-        {
-        }
-    }
+    PWMGenConfigure(PWM0_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+
+    uint32_t freq = 40000000;
+    uint32_t duty = freq / 2;
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, freq);
+    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, duty);
+
+    PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, true);
+    PWMGenEnable(PWM0_BASE, PWM_GEN_0);
 }
