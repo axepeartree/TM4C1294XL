@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "tm4c1294ncpdt.h"
+#include "inc/tm4c1294ncpdt.h"
 
 int main(void)
 {
