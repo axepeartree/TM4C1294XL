@@ -13,6 +13,6 @@ Run `build.bat` at the root folder.
 
 ## TODOs:
 
-1. Makefile instead of .bat
-2. Add driverlib
-3. Debugging
+1. Makefile instead of .bat.
+2. Add driverlib.
+3. Debugging.
